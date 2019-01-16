@@ -1,0 +1,56 @@
+extends layout
+
+block content
+  - var balance = address.balance / 100000000
+  - var sent = address.sent /100000000
+  - var received = address.received / 100000000
+  - var staked = address.staked / 100000000
+
+  .ibox
+   .ibox-body
+    .row
+     .col-xs-12.col-md-12
+      img.qrcode.pull-right.hidden-xs(src='/qr/#{address.a_id}')
+      .panel.panel-default.panel-address-summary
+        .panel-heading(style='position:relative; margin-bottom: 20px; margin-top: 50px; min-height: 60px;')
+          strong(style='zoom: 150%;')  #{address.a_id}
+          if settings.labels[address.a_id]
+            if settings.labels[address.a_id].type  
+              label(class='label label-#{settings.labels[address.a_id].type} pull-right hidden-xs', style='margin-left:15px;')
+                =settings.labels[address.a_id].label
+                if settings.labels[address.a_id].url
+                  a(href='#{settings.labels[address.a_id].url}', target='_blank')
+                    span.fa.fa-question-circle(style='margin-left:5px;')
+            else
+              label.label.label-default.pull-right.hidden-xs(style='margin-left:15px;') 
+                =settings.labels[address.a_id].label
+                if settings.labels[address.a_id].url
+                  a(href='#{settings.labels[address.a_id].url}', target='_blank')
+                    span.fa.fa-question-circle(style='margin-left:5px;')
+        table.table.table-bordered.table-striped.summary-table.table-responsive(style='display:none;')
+          thead
+            tr
+              if address.a_id !== 'coinbase'
+                if settings.show_sent_received == true
+                  th #{settings.locale.total_received} (#{settings.symbol})
+              if settings.show_staked_balance == true && staked >= 0
+                th #{settings.locale.total_stake} (#{settings.symbol})
+              if settings.show_sent_received == true
+                th #{settings.locale.total_sent} (#{settings.symbol})
+                th #{settings.locale.rl_balance} (#{settings.symbol})
+          tbody             
+            tr
+              if address.a_id !== 'coinbase'
+                if settings.show_sent_received == true
+                  td #{received.toFixed(8)}
+              if settings.show_staked_balance == true && staked >= 0
+                td #{staked.toFixed(8)}
+              if settings.show_sent_received == true
+                td #{sent.toFixed(8)}
+              td#srvBalance #{balance.toFixed(8)}
+      .panel.panel-default.hidden-xs
+        .panel-heading
+          strong #{settings.locale.ex_latest_transactions}
+        table.table.table-bordered.table-striped.history-table.table-responsive.table-sorted
+          include ./includes/address_history.jade
+      .footer-padding

@@ -1,0 +1,47 @@
+extends layout
+
+block content
+  script.
+    var cek = '<i class="fa fa-check" aria-hidden="true"></i>';
+    $(document).ready(function(){
+      var ctable = $('#masternodes-table').dataTable({
+        autoWidth: true,
+        searching: true,
+        ordering: false,
+        pageLength: 15,
+        responsive: true,
+        lengthChange: true,
+        processing: true,
+        ajax: {
+          url: '/api/getmasternodepub',
+          dataSrc: function ( json ) {
+            var masternodes = [];
+
+            Object.keys(json).forEach(function(e) {
+              masternodes.push({'ip': e, 'addrs': json[e], 'stts': cek});
+            });
+
+            return masternodes;
+          }
+        },
+        columns: [
+          { data: 'ip', width: '40%' },
+          { data: 'addrs', width: '40%' },
+          { data: 'stts', width: '10%' }          
+        ]
+      });
+    });
+  .row
+  .ibox
+   .ibox-body
+     .col-md-12(style="margin-bottom: 4%")
+       .panel.panel-default
+        .panel-heading
+           h3.m-b-20 #{settings.locale.mn}
+         table#masternodes-table.table-responsive.table.table-bordered.table-striped
+           thead
+             tr
+               th.text-center #{settings.locale.mn_pubkey}
+               th.text-center #{settings.locale.net_address}
+               th.text-center Status
+           tbody.text-center

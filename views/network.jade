@@ -1,0 +1,82 @@
+extends layout
+
+block content   
+  script.
+    $(document).ready(function(){
+      var ctable = $('#connections-table').dataTable( {  
+        autoWidth: true,      
+        searching: false,
+        ordering: false,
+        responsive: true,
+        lengthChange: true,
+        processing: true,
+        ajax: {
+          url: '/ext/connections',
+          dataSrc: function ( json ) {
+            for ( var i=0;i<json.data.length; i++ ) 
+             {
+              var s=json.data[i]["createdAt"];
+              d=moment(s);
+              json.data[i]["createdAt"]=d;
+
+             }
+            return json.data;
+          }
+        },
+        columns: [
+          { data: 'address', width: '18%' },
+          { data: 'protocol', width: '18%' },
+          { data: 'version', width:'18%' },
+          { data: 'country', width: '18%'},
+          { data: 'createdAt', width: '28%'}
+        ]
+      });
+      var dtable = $('#addnode-table').dataTable( {  
+        autoWidth: true,      
+        lengthMenu: [[10,25,50,100,-1], [10,25,50,100,"All"]],
+        searching: false,
+        ordering: false,
+        responsive: true,
+        lengthChange: true,
+        processing: true,
+        ajax: {
+          url: '/ext/connections',
+          dataSrc: function ( json ) {
+            for ( var i=0;i<json.data.length; i++ ) {json.data[i]["address"]="addnode="+json.data[i]["address"]}
+            return json.data;
+          }
+        },
+        columns: [
+          { data: 'address', width: '100%' }
+        ]
+      });
+    });
+   .row
+    .col-md-12
+     i #{settings.locale.net_warning}
+     .ibox
+      .ibox-body
+       .tabpanel
+         ul.nav.nav-tabs.tabs-line
+           li.nav-item
+             a.nav-link.active(href='#connections', data-toggle='tab') #{settings.locale.net_connections}
+           li.nav-item
+             a.nav-link(href='#addnode', data-toggle='tab') Addnode
+       .tab-content
+        #connections.tabpanel.tab-pane.fade.show.active
+           table#connections-table.table.table-bordered.table-striped
+             thead
+               tr
+                 th.text-center #{settings.locale.net_address}
+                 th.text-center #{settings.locale.net_protocol}
+                 th.text-center #{settings.locale.net_subversion}
+                 th.text-center #{settings.locale.net_country} 
+                 th.text-center Since
+             tbody.text-center
+        #addnode.tabpanel.tab-pane
+           table#addnode-table.table.table-bordered
+             thead
+               tr
+                 th.text-center Lines to add into dev.conf
+             tbody.text-left
+

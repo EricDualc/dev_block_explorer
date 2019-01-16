@@ -1,0 +1,80 @@
+thead(class='txs')
+  tr
+    th.hidden-xs(data-sorter="num",order='desc') #{settings.locale.timestamp}
+    th #{settings.locale.height}
+    th.hidden-xs #{settings.locale.tx_hash}
+    th #{settings.locale.mkt_amount} (#{settings.symbol})
+- var total = 0
+tbody(class='txs')
+  - var prevtxs = []
+  each tx in txs
+    - var time = format_unixtime(tx.timestamp)
+    - var out = 0
+    - var vin = 0
+    each r in tx.vout
+      if r.addresses == address.a_id
+        - out += r.amount
+    each s in tx.vin
+      if s.addresses == address.a_id
+        - vin += s.amount
+    - var hidden = (prevtxs[tx._id] != undefined)
+    if hidden
+      - prevtxs[tx._id] = tx.txid
+    else
+      - total += out - vin
+      tr
+        td.hidden-xs(data-sort='#{tx.timestamp}') #{time}
+        td.hidden-xs
+          a(href='/block/#{tx.blockhash}') #{tx.blockindex}
+        td.hidden-xs
+          a(href='/tx/#{tx.txid}') #{tx.txid}
+        td
+          if vin != 0 && out != 0
+            - tot = (vin - out) / 100000000
+            - vin = vin / 100000000
+            if prevtxs[tx._id] != undefined
+              - out = out / 100000000
+              span.sub +&nbsp;#{out.toFixed(8)}<br/>-&nbsp;#{vin.toFixed(8)}
+            else if tot > 0
+              span.red -&nbsp;#{tot.toFixed(8)}
+            else
+              - tot = tot * -1 
+              span +&nbsp;#{tot.toFixed(8)}
+          else if vin == 0
+            - out = out / 100000000
+            span.vout +&nbsp;#{out.toFixed(8)}
+          else
+            - vin = vin / 100000000
+            span.vin.red -&nbsp;#{vin.toFixed(8)}
+        - prevtxs[tx._id] = tx.txid
+
+if txs.length < 300 && total > 0
+  tfoot
+    tr
+      - total = total / 100000000
+      th(colspan=3,style='text-align:right;') Total #{settings.symbol}
+      th#dispBalance #{total.toFixed(8)}
+script.
+  $(document).ready(function(){
+    var $tbs = $('table.table-sorted').first();
+    tb = $.fn.dataTable.Api($tbs);
+    tb.on('draw', function(e,st){
+      st.aoColumns[0].asSorting = ['desc'];
+      st.aoColumns[1].asSorting = [];
+      st.aoColumns[2].asSorting = [];
+      st.aoColumns[3].asSorting = [];
+      $('span.sub').css('color','silver').parents('tr').css('opacity',0.5);
+      $('span.red').css('color','darkred');
+      $(st.nTable).find('thead th').removeClass('sorting sorting_asc');
+      var srvBalance = $('td#srvBalance');
+      if (srvBalance.text() == $('th#dispBalance').text() || $('th#dispBalance').text() == '') {
+         srvBalance.parents('table').first().show();
+      } else if (srvBalance.text() != '0.00000000') {
+         srvBalance.parents('table').first().show();
+         $(st.nTable).find('tfoot tr').hide();
+      }
+    });
+    tb.order.fixed({pre: [0, 'desc']});
+    tb.page.len(15);
+    tb.draw();
+  });

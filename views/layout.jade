@@ -1,0 +1,225 @@
+doctype html
+html
+  head
+    title= settings.title
+    link(rel='stylesheet', href='/assets/vendors/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/vendor/jqplot/jquery.jqplot.css')
+    link(rel='stylesheet', href='//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.css')
+    link(rel='stylesheet', href='/assets/vendors/font-awesome/css/font-awesome.min.css')
+    link(rel='stylesheet', href='/assets/vendors/line-awesome/css/line-awesome.min.css')
+    link(rel='stylesheet', href='/assets/vendors/themify-icons/css/themify-icons.css')
+    link(rel='stylesheet', href='/assets/vendors/animate.css/animate.min.css')
+    link(rel='stylesheet', href='/assets/vendors/toastr/toastr.min.css')
+    link(rel='stylesheet', href='/assets/css/main.css')
+    link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jqvmap.min.css')
+    link(rel='stylesheet', href='//cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css')
+    script(src='/assets/vendors/jquery/dist/jquery.min.js')
+    script(src='/assets/vendors/popper.js/dist/umd/popper.min.js')
+    script(src='/assets/vendors/bootstrap/dist/js/bootstrap.min.js')
+    script(src='/assets/vendors/jquery-slimscroll/jquery.slimscroll.min.js')
+    script(src='/assets/vendors/jquery-idletimer/dist/idle-timer.min.js')
+    script(src='/assets/vendors/toastr/toastr.min.js')
+    script(src='/assets/vendors/chart.js/dist/Chart.min.js')
+    script(src='/assets/vendors/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js')
+    script(src='/assets/js/app.js')
+    script(src='//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+    script(src='//cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.js')
+    script(src='//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.js')
+    script(src='//cdn.datatables.net/rowreorder/1.2.3/js/dataTables.rowReorder.min.js')
+    script(src='//cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js')
+    script(src='//cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/maps/jquery.vmap.world.js')
+    script(src='/vendor/jqplot/jquery.jqplot.min.js')
+    script(src="/vendor/jqplot/excanvas.min.js")
+    script(src='/vendor/jqplot/plugins/jqplot.dateAxisRenderer.min.js')
+    script(src='/vendor/jqplot/plugins/jqplot.ohlcRenderer.min.js')
+    script(src='/vendor/jqplot/plugins/jqplot.highlighter.min.js')
+    script(src='/vendor/jqplot/plugins/jqplot.pieRenderer.min.js')
+    script(src='/vendor/jqplot/plugins/jqplot.barRenderer.min.js')
+    script(src='/vendor/jqplot/plugins/jqplot.categoryAxisRenderer.min.js')
+    script(src='/vendor/jqplot/plugins/jqplot.canvasTextRenderer.min.js')
+    script(src='/vendor/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js')
+    script(src='//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js')
+    script(src='/javascripts/chart.js')
+    script(src='/javascripts/mapdata.js')
+    script(src='/javascripts/hashdata.js')
+    script(src='/javascripts/diffdata.js')
+    script(src='/javascripts/timedata.js')
+    script(src='/javascripts/array.js')
+    script.
+      
+      $(document).ready(function(){
+        $('##{active}').addClass('active');
+          setTimeout(function () {
+              $('a[href$="' + location.pathname + '"]').parent().addClass('active')
+          }, 50)
+          $("#copyright").html(new Date().getFullYear() + ' © <b>Devcore</b>');
+
+        function update_stats(){
+          $.ajax({url: '/ext/summary', success: function(json){
+            $("#supply").text(json.data[0].supply + ' DEV');
+            $("#difficulty").text('PoW: '+json.data[0].difficulty.toFixed(2));
+            $("#PoWdifficultyWithHashrate").text('PoW: '+json.data[0].difficulty.toFixed(1)+' ('+parseFloat(json.data[0].hashrate).toFixed(1) + ' GH/s)');
+            $("#PoSdifficulty").text('PoS: '+json.data[0].difficultyHybrid.toFixed(2));
+            $("#masternodeCount").text(json.data[0].masternodeCount);
+            $("#masternodeOnlineCount").text(json.data[0].masternodeOnlineCount);
+            $("#difficultyHybrid").text(json.data[0].difficultyHybrid);
+            $("#hashrate").text(parseFloat(json.data[0].hashrate).toFixed(2) + ' GH/s');
+            $("#price_btc").text(json.data[0].lastPriceBtc);
+            $("#lblX1").text(' ');
+            $("#price_usd").text(json.data[0].lastPriceUsd);
+            $("#cmc_market_cap").text(json.data[0].marketCapUsd);
+            $("#cmc_volume_24h").text(json.data[0].marketVolumeUsd);
+            $("#lblConnections").text(json.data[0].connections + ' connections');
+            $("#lblBlockcountValue").text(json.data[0].blockcount);
+
+
+            if (json.data[0].cmc) {
+              if (json.data[0].cmc.percent_change_24h) {
+                $("#price_percent_change_value").text(json.data[0].cmc.percent_change_24h);
+                if (json.data[0].cmc.percent_change_24h.substr(0, 1) === '-')
+                  $("#price_percent_change").attr('class', 'text-danger');
+                else
+                  $("#price_percent_change").attr('class', 'text-success');
+              }
+              if (json.data[0].cmc.rank)
+                $("#cmc_rank").text(json.data[0].cmc.rank);
+            }
+          }});
+        }
+        $('.block-last-next').tooltip({
+          animation: true,
+          delay: { hide: 500 },
+        });
+        if($('.history-table tbody tr').length) {
+          $('.history-table').dataTable( {
+            searching: false,
+            ordering: true,
+            responsive: true
+          });
+        }
+        $('.iquidus').css('color',$('.table').css('color'));
+        $(window).resize(function () {
+          $($.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+        });
+        setInterval( function() {
+          update_stats();
+        }, 60000);
+        update_stats();
+      });
+  body.boxed-layout
+    .page-wrapper
+    - function format_unixtime(unixtime) {
+      - var a = new Date(unixtime*1000);
+      - var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      - var year = a.getFullYear();
+      - var month = months[a.getMonth()];
+      - var date = a.getDate();
+      - var hour = a.getHours();
+      - var min = a.getMinutes();
+      - var sec = a.getSeconds();
+      - var suffix = 'th'
+      if date == 1 || date == 21 || date == 31
+        - suffix = 'st'
+      if date == 2 || date == 22 || date == 32
+        - suffix = 'nd'
+      if date == 3 || date == 23
+        - suffix = 'rd'
+      if hour < 10
+        - hour = '0' + hour
+      if min < 10
+        - min = '0' + min
+      if sec < 10
+        - sec = '0' + sec
+      - var time = date + suffix + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+      - return time
+    -  };
+      header.header
+        .clf.header-topbar
+          .wrapper
+            .page-brand.col-md-3.col-sm-4.col-xs-9
+              a(href='/')
+                img(src='/assets/img/devcore-logo.png',class='img-responsive')
+            ul.nav.pull-right.navbar-toolbar
+              li
+                a.nav-link.search-toggler.js-search-toggler.pull-left
+                  i.fa.fa-search
+                  span Search Devcore blockchain here...
+              li
+                a.nav-link.sidebar-toggler.js-sidebar-toggler
+                  span.icon-bar
+                  span.icon-bar
+                  span.icon-bar
+            form.search-top-bar(method='post', action='/search')
+              input.search-input(type='text',placeholder='You may enter a block height, block hash, tx hash or address.',name='search')
+              button.reset.input-search-icon
+                i.fa.fa-search
+              button.reset.input-search-close(type='button')
+                i.ti-close
+        .top-navbar.clf
+          .wrapper(id='navbar-wrapper')
+            ul.nav-menu
+              li.dropdown
+                a(href='/') Explorer
+              li.dropdown
+                a(href='/network') Network
+              li.dropdown
+                a(href='/hash') Stats
+              li.dropdown
+                a(href='/richlist') Top 100
+              //li.dropdown
+                //a(href='/masternodes') Masternodes
+              li.dropdown
+                a(href='/markets/#{settings.markets.default}') Exchange
+              li.dropdown
+                a(href='/info') API
+      .wrapper.content-wrapper
+        .page-content.fade-in-up
+          .row
+            .col-lg-3.col-md-6
+              .ibox.widget-stat
+                .ibox-body.text-center
+                  .text-muted.m-b-20 DEV VALUE
+                  h5.m-b-5#price_btc
+                  br
+            .col-lg-3.col-md-6
+              .ibox.widget-stat
+                .ibox-body.text-center
+                  .text-muted.m-b-20 Coin Supply
+                  h5.m-b-5
+                    #supply
+            .col-lg-3.col-md-6
+              .ibox.widget-stat
+                .ibox-body.text-center
+                  .text-muted.m-b-20 Difficulty
+                  h5.m-b-5
+                    #PoWdifficultyWithHashrate
+                    br
+                    #PoSdifficulty
+            .col-lg-3.col-md-6
+              .ibox.widget-stat
+                .ibox-body.text-center
+                  .text-muted.m-b-20 MASTERNODES
+                  h5.m-b-5#masternodeOnlineCount
+                  br
+
+      .wrapper.content-wrapper
+        .page-content.fade-in-up
+          block content
+          footer.page-footer.d-flex.justify-content-between
+            .to-top
+              i.fa.fa-angle-double-up
+            #copyright
+            span.connections
+              label#lblBlockcountValue.label.label-default -
+              label#lblConnections.label.label-default -
+            .pull-right
+              a.link-blue(href='https://github.com/DEV-Core/dev')
+                i.fa.fa-2x.fa-github.m-r-5
+              a.link-blue(href='https://twitter.com/DEV_Coin')
+                i.fa.fa-2x.fa-twitter.m-r-5
+              a.link-blue(href='https://bitcointalk.org/index.php?topic=2422372')
+                i.fa.fa-2x.fa-btc.m-r-5
+

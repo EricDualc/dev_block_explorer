@@ -1,0 +1,208 @@
+/*
+  This file must be valid JSON. But comments are allowed
+  Please edit settings.json, not settings.json.template
+*/
+{
+  // name your instance!
+  "title": "DEVCORE EXPLORER",
+
+  "address": "explorer.devcore.io",
+  //"address": "localexplorer.devcore.io",
+
+  // coin name
+  "coin": "DEVCoin",
+
+  // coin symbol
+  "symbol": "DEV",
+
+  // logo
+  "logo": "/images/logo.png",
+
+  // favicon
+  "favicon": "public/favicon.ico",
+  "baseType": "bitcoin",
+  // Uses bootswatch themes (http://bootswatch.com/)
+  // Valid options:
+  //     Cerulean, Cosmo, Cyborg, Darkly, Flatly, Journal, Lumen, Paper,
+  //     Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
+  // theme (see /public/themes for available themes)
+  "theme": "Journal",
+
+  // port to listen for requests on.
+  "port" : 80,
+
+  // database settings (MongoDB)
+  "dbsettings": {
+    "user": "dev",
+    "password": "Dev123",
+    "database": "explorerdb222",
+    "address": "127.0.1.1",
+    "port": 27010
+  },
+
+  //update script settings
+  "update_timeout": 10,
+  "check_timeout": 250,
+
+  // wallet settings
+  "wallet": {
+    "host": "127.0.0.1",
+    "port": 9888,
+    "user": "devrpc",
+    "pass": "8eov45SdSCU41Ndo4q1KCSkWwDGM4Xrvt2zWuKJ4p7Rx"
+  },
+
+  // confirmations
+  "confirmations": 10,
+
+  // optional wallet features
+  "addressindex": true,
+
+  // language settings
+  "locale": "locale/en.json",
+
+  // menu settings
+  "display": {
+    "api": true,
+    "richlist": true,
+    "twitter": true,
+    "bitcointalk": true,
+    "website": true,
+    "markets": true,
+    "github": true,
+    "search": true,
+    "movement": false,
+    "masternodes": false,
+    "network": true,
+    "coininfo": false,
+    "coinmarketcap": true
+  },
+
+  // index page (valid options for difficulty are POW, POS or Hybrid)
+  "index": {
+    "show_hashrate": true,
+    "show_coin_supply": true,
+    "difficulty": "Hybrid",
+    "last_txs": 100
+  },
+
+//  "nethash": "netstakeweight",
+  // ensure links on API page are valid
+  "api": {
+    "blockindex": 178440,
+    "blockhash": "000000000002c146ef422d6ea1adc5484b057ef84b9cad51b2a1dfa71c7d8a77",
+    "txhash": "14ca61fb18326f34bd65f7c367c429d9535db55f787a8b06f8405c1fc3b02c45",
+    "address": "LTqvqGqB5uDXKQf8Xr9PUt5D2Rimb5EuX4"
+  },
+
+  // market settings
+  //supported markets: bittrex, poloniex, yobit, empoex, bleutrade, cryptopia, ccex
+  //default market is loaded by default and determines last price in header
+  "markets": {
+    "coin": "DEV",
+    "exchange": "BTC",
+    "enabled": ["cryptopia"],
+    "cryptopia_id": "5643",
+    "ccex_key" : "",
+    "default": "cryptopia"
+  },
+
+  // richlist/top100 settings
+  "richlist": {
+    "distribution": true,
+    "received": true,
+    "balance": true,
+    "coin_supply": true
+  },
+  // movement page settings
+  // min amount: show transactions greater than this value
+  // low flag: greater than this value flagged yellow
+  // high flag: greater than this value flagged red
+  "movement": {
+    "min_amount": 25,
+    "low_flag": 25,
+    "high_flag": 25
+  },
+
+  // Masternodes page
+  // default port: Default port a masternode is running. 
+  "masternodes": {
+    "default_port": 28868,
+
+    // Use index-based values (starting with 0).
+    // 0 is the key of the masterlist data.
+    // -1 means that the info is not available.
+    "list_format": {
+      "address": 3,
+      "protocol": 2,
+      "status": 1,
+      "lastseen": 4,
+      "lastpaid": 5,
+      "ip": 6,
+      "txs": 0
+    }
+  },
+
+
+  // Coin info page
+  "coininfo": {
+    "basic_info_links": [
+      ["Github", "http://github.com/DEV-Core/dev"]
+    ],
+    "masternode_required": 16120,
+    "block_time_sec": 60,
+    "block_reward_mn": 0.4
+  },
+
+  // CoinMarketCap integration
+  "coinmarketcap": {
+    "ticker": "devcoin"
+  },
+  // twitter, facebook, googleplus
+  "twitter": "DEV_COIN",
+  "bitcointalk": "2422372",
+  "website": "https://devcore.io/",
+  "github": "DEV-Core/dev",
+
+  //genesis
+  "genesis_tx": "e08ae0cfc35a1d70e6764f347fdc54355206adeb382446dd54c32cd0201000d3",
+  "genesis_block": "00000759bb3da130d7c9aedae170da8335f5a0d01a9007e4c8d3ccd08ace6a42",
+
+  // Fetch blocks from <index>
+  "fetch_blocks_from": 0,
+  //heavy (enable/disable additional heavy features)
+  "heavy": false,
+
+  //amount of txs to index per address (stores latest n txs)
+  "txcount": 1500,
+
+  //show total sent & received on address page (set false if PoS)
+  "show_sent_received": true,
+  "show_staked_balance": true,
+
+  // how to calculate current coin supply
+  // COINBASE : total sent from coinbase (PoW)
+  // GETINFO : retreive from getinfo api call (PoS)
+  // HEAVY: retreive from heavys getsupply api call
+  // BALANCES : total of all address balances
+  // TXOUTSET : retreive from gettxoutsetinfo api call
+  "supply": "TXOUTSET",
+
+  // how to acquire network hashrate
+  // getnetworkhashps: uses getnetworkhashps api call, returns in GH/s
+  // netmhashps: uses getmininginfo.netmhashpsm returns in MH/s
+  "nethash": "getnetworkhashps",
+
+  // nethash unitd: sets nethash API return units
+  // valid options: "P" (PH/s), "T" (TH/s), "G" (GH/s), "M" (MH/s), "K" (KH/s)
+  "nethash_units": "G",
+
+  // Address labels
+  // example : "JhbrvAmM7kNpwA6wD5KoAsbtikLWWMNPcM": {"label": "This is a burn address", "type":"danger", "url":"http://example.com"}
+  // label (required) = test to display
+  // type (optional) = class of label, valid types: default, primary, warning, danger, success
+  // url (optional) = url to link to for more information
+  "labels": {
+  // "LaWJey2vmQ66DeyV7vWCbZgSUqxXjZpBXD": {"label": "Explorer Donation Address", "type":"default"}
+  }
+}
